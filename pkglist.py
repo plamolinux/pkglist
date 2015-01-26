@@ -16,13 +16,12 @@ blockpkgs = ('aaa_base', 'hdsetup', 'etc', 'sysvinit', 'shadow', 'network_config
 
 '''
  __replaces: 改名，分割，集約されたパッケージを追跡するために，旧パッケージ名を新パッケージ名にマップする．
-ex:  'tamago' -> 'tamago_tsunagi', 'emacs' -> 'emacs', 'emacs_mini', 'emacs_bin', 'emacs_lib'
-emacs のように新パッケージでも同名のパッケージがある場合を考慮して，旧パッケージはバージョンと共にチェックする．
-データ構造は replace_list['old_name'] = (version, (new_name1, new_name2,,,))という形．
- 一対多の対応を可能にするため，新パッケージ名のリストはタプルにしているので，要素が一つだけでも末尾に","を付ける必要あり．
-'''
+ex:  'tamago' -> 'tamago_tsunagi', 'python' -> 'Python2', 'Python3' -> 'Python'
+分割されたパッケージを追跡するために、新パッケージ名はタプルにして一対多の対応を可能にしたが、
+カテゴリごとに新パッケージを表示する機能を追加したので一対多のマッピングは不要になったものの、
+新パッケージ名のリストはタプルのままなので，要素が一つだけでも末尾に","を付ける必要あり．
 
-'''
+旧仕様:
 replace_list = {'tamago':('20110401', ('tamago_tsunagi',)), 
                 'emacs':('24.2', ('emacs_mini', 'emacs_bin', 'emacs_lib', 'emacs')), 
                 'Python3':('3.3.2', ('Python',)), 
@@ -33,11 +32,11 @@ replace_list = {'tamago':('20110401', ('tamago_tsunagi',)),
                 'xfwm4_themes':('4.6.0',('xfwm4_themes', 'xfce_theme_albatross', 'xfce_theme_greybird', 'xfce_theme_numix', 'xfce_theme_orion')),
                }
 '''
-replace_list = {'tamago':('20110401', ('tamago_tsunagi',)), 
-                'Python3':('3.3.2', ('Python',)), 
-                'python':('2.7.3', ('Python2',)), 
-                'pycups2':('1.9.70', ('py2cups',)), 
-                'pycurl2':('7.19.5',('py2curl',))
+replace_list = {'tamago':'tamago_tsunagi', 
+                'Python3':'Python',
+                'python':'Python2',
+                'pycups2':'py2cups',
+                'pycurl2':'py2curl'
                 }
 
 #allpkgs['__replaces'] = replace_list
@@ -61,7 +60,7 @@ for arch in archdir:
                
                 (base, vers, p_arch, tmp) = j.split("-")
                 (build, ext) = tmp.split(".") 
-                r_path = root.replace("/nfs/Plamo/Plamo-5.x/", "")
+                r_path = root.replace("/home/ftp/pub/Plamo-5.x/", "")
                 data_t = (vers, p_arch, build, ext, r_path)
                 allpkgs[base] = data_t
 
