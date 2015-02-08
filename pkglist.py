@@ -8,11 +8,10 @@ basedir = '/home/ftp/pub/Plamo-5.x/'
 archdir = ('x86', 'x86_64')
 
 '''
- __blockpkgs: updatepkg でアップデートできないパッケージは，デフォルトでは表示しないようにする
-とりあえず対象は次の6つ ('aaa_base, hdsetup, etc, sysvinit, shadow, network_configs)
-get_pkginfo.py で -b オプションを指定すれば，これらも合わせて表示される．
+ __blockpkgs: updatepkg だけでアップデートできないパッケージは，デフォルトでは表示しないようにする
+ただし get_pkginfo.py で -b オプションを指定すれば，これらも合わせて表示される．
 '''
-blockpkgs = ('aaa_base', 'hdsetup', 'etc', 'sysvinit', 'shadow', 'network_configs')
+blockpkgs = ['aaa_base', 'devs', 'hdsetup', 'etc', 'sysvinit', 'shadow', 'network_configs']
 
 '''
  __replaces: 改名，分割，集約されたパッケージを追跡するために，旧パッケージ名を新パッケージ名にマップする．
@@ -25,11 +24,17 @@ replace_list = {'tamago':'tamago_tsunagi',
                 'pycurl2':'py2curl'
                 }
 
+'''
+__no_install: これらのパッケージは updatepkg -f 以外の作業が必要になるので，
+ダウンロードはできるが自動インストールはしない
+'''
+no_install = ['kernel', 'kernel_headers', 'kernelsrc', 'grub', 'lilo']
 
 for arch in archdir:
     allpkgs= {}
     allpkgs['__blockpkgs'] = blockpkgs
     allpkgs['__replaces'] = replace_list
+    allpkgs['__no_install'] = no_install
     pkg_path = basedir + arch  + "/plamo/"
     print(pkg_path)
     for root, dirs, files in os.walk(pkg_path):
