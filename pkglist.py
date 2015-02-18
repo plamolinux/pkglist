@@ -28,7 +28,7 @@ replace_list = {'tamago':'tamago_tsunagi',
 __no_install: これらのパッケージは updatepkg -f 以外の作業が必要になるので，
 ダウンロードはできるが自動インストールはしない
 '''
-no_install = ['kernel', 'kernel_headers', 'kernelsrc', 'grub', 'lilo']
+no_install = ['kernel', 'kernel_headers', 'kernelsrc', 'grub', 'lilo', 'docbook_xml_4.1.2', 'docbook_xml_4.2', 'docbook_xml_4.3', 'docbook_xml_4.4', 'docbook_xml_4.5', 'docbook_xml_5.0']
 
 for arch in archdir:
     allpkgs= {}
