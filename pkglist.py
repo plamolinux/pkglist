@@ -36,7 +36,7 @@ for arch in archdir:
     allpkgs['__replaces'] = replace_list
     allpkgs['__no_install'] = no_install
     pkg_path = basedir + arch  + "/plamo/"
-    print(pkg_path)
+    # print(pkg_path)
     for root, dirs, files in os.walk(pkg_path):
         if 'old' in dirs:
             dirs.remove('old') 
@@ -53,6 +53,18 @@ for arch in archdir:
                 r_path = root.replace(basedir, "")
                 data_t = (vers, p_arch, build, ext, r_path)
                 allpkgs[base] = data_t
+
+    pkg_path = basedir + arch  + "/contrib/"
+    # print(pkg_path)
+    for root, dirs, files in os.walk(pkg_path):
+        if "old" in dirs:
+            dirs.remove("old")
+        for i in files:
+            if ".txz" in i or ".tgz" in i:
+                (base, vers, p_arch, tmp) = i.split("-")
+                (build, ext) = tmp.split(".")
+                r_path = root.replace(basedir, "")
+                allpkgs[base] = (vers, p_arch, build, ext, r_path)
 
     pickle_name = "allpkgs_" + arch + ".pickle"
     with open(pickle_name, 'wb') as f:
