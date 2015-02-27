@@ -1,71 +1,57 @@
-#! /usr/bin/python
+#!/usr/bin/python
 # -*- coding: euc-jp -*-
 
-import os
-import pickle
+import os, pickle
 
 basedir = '/home/ftp/pub/Plamo-5.x/'
 archdir = ('x86', 'x86_64')
+channel = ('plamo', 'contrib')
 
 '''
- __blockpkgs: updatepkg だけでアップデートできないパッケージは，デフォルトでは表示しないようにする
-ただし get_pkginfo.py で -b オプションを指定すれば，これらも合わせて表示される．
+__blockpkgs: updatepkg だけでアップデートできないパッケージは，デフォル
+トでは表示しないようにする．
+ただし get_pkginfo.py で -b オプションを指定すれば，これらも合わせて表
+示される．
 '''
-blockpkgs = ['aaa_base', 'devs', 'hdsetup', 'etc', 'sysvinit', 'shadow', 'network_configs']
+blockpkgs = ['aaa_base', 'devs', 'etc', 'hdsetup', 'network_configs',
+        'shadow', 'sysvinit']
 
 '''
- __replaces: 改名，分割，集約されたパッケージを追跡するために，旧パッケージ名を新パッケージ名にマップする．
-ex:  'tamago' -> 'tamago_tsunagi', 'python' -> 'Python2', 'Python3' -> 'Python'
+__replaces: 改名，分割，集約されたパッケージを追跡するために，旧パッケ
+ージ名を新パッケージ名にマップする．
+ex: 'tamago' -> 'tamago_tsunagi'
+    'python' -> 'Python2', 'Python3' -> 'Python'
 '''
-replace_list = {'tamago':'tamago_tsunagi', 
-                'Python3':'Python',
-                'python':'Python2',
-                'pycups2':'py2cups',
-                'pycurl2':'py2curl'
-                }
+replace_list = {'tamago': 'tamago_tsunagi', 'python': 'Python2',
+        'Python3': 'Python', 'pycups2': 'py2cups', 'pycurl2': 'py2curl'}
 
 '''
-__no_install: これらのパッケージは updatepkg -f 以外の作業が必要になるので，
-ダウンロードはできるが自動インストールはしない
+__no_install: これらのパッケージは updatepkg -f 以外の作業が必要になる
+ので，ダウンロードはできるが自動インストールはしない．
 '''
-no_install = ['kernel', 'kernel_headers', 'kernelsrc', 'grub', 'lilo', 'docbook_xml_4.1.2', 'docbook_xml_4.2', 'docbook_xml_4.3', 'docbook_xml_4.4', 'docbook_xml_4.5', 'docbook_xml_5.0']
+no_install = ['grub', 'lilo', 'kernel', 'kernel_headers', 'kernelsrc',
+        'docbook_xml_4.1.2', 'docbook_xml_4.2', 'docbook_xml_4.3',
+        'docbook_xml_4.4', 'docbook_xml_4.5', 'docbook_xml_5.0']
 
 for arch in archdir:
     allpkgs= {}
     allpkgs['__blockpkgs'] = blockpkgs
     allpkgs['__replaces'] = replace_list
     allpkgs['__no_install'] = no_install
-    pkg_path = basedir + arch  + "/plamo/"
-    # print(pkg_path)
-    for root, dirs, files in os.walk(pkg_path):
-        if 'old' in dirs:
-            dirs.remove('old') 
-        if 'NG' in dirs:
-            dirs.remove('NG')  
-        if '11_mate.old' in dirs:
-            dirs.remove('11_mate.old')
-
-        for j in files:
-            if j.find(".txz") > 0 or j.find(".tgz") > 0:
-               
-                (base, vers, p_arch, tmp) = j.split("-")
-                (build, ext) = tmp.split(".") 
-                r_path = root.replace(basedir, "")
-                data_t = (vers, p_arch, build, ext, r_path)
-                allpkgs[base] = data_t
-
-    pkg_path = basedir + arch  + "/contrib/"
-    # print(pkg_path)
-    for root, dirs, files in os.walk(pkg_path):
-        if "old" in dirs:
-            dirs.remove("old")
-        for i in files:
-            if ".txz" in i or ".tgz" in i:
-                (base, vers, p_arch, tmp) = i.split("-")
-                (build, ext) = tmp.split(".")
-                r_path = root.replace(basedir, "")
-                allpkgs[base] = (vers, p_arch, build, ext, r_path)
-
-    pickle_name = "allpkgs_" + arch + ".pickle"
-    with open(pickle_name, 'wb') as f:
+    for ch in channel:
+        pkg_path = '{}{}/{}/'.format(basedir, arch, ch)
+        for root, dirs, files in os.walk(pkg_path):
+            if 'old' in dirs:
+                dirs.remove('old')
+            if 'NG' in dirs:
+                dirs.remove('NG')
+            if '11_mate.old' in dirs:
+                dirs.remove('11_mate.old')
+            for i in files:
+                if '.txz' in i or '.tgz' in i:
+                    (base, vers, p_arch, tmp) = i.split('-')
+                    (build, ext) = tmp.split('.')
+                    path = root.replace(basedir, '')
+                    allpkgs[base] = (vers, p_arch, build, ext, path)
+    with open('allpkgs_{}.pickle'.format(arch), 'w') as f:
         pickle.dump(allpkgs, f)
