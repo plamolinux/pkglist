@@ -3,7 +3,7 @@
 
 import os, pickle
 
-basedir = '/home/ftp/pub/Plamo-5.x/'
+basedir = '/home/ftp/pub/Plamo-6.x/'
 archdir = ('x86', 'x86_64')
 channel = ('plamo', 'contrib')
 
