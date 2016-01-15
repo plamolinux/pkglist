@@ -3,7 +3,7 @@
 
 import os, pickle
 
-basedir = '/home/ftp/pub/Plamo-6.x/'
+basedir = '.'
 archdir = ('x86', 'x86_64')
 channel = ('plamo', 'contrib')
 
@@ -33,13 +33,15 @@ no_install = ['grub', 'lilo', 'kernel', 'kernel_headers', 'kernelsrc',
         'docbook_xml_4.1.2', 'docbook_xml_4.2', 'docbook_xml_4.3',
         'docbook_xml_4.4', 'docbook_xml_4.5', 'docbook_xml_5.0']
 
+old_dir = os.getcwd()
 for arch in archdir:
+    os.chdir(arch)
     allpkgs= {}
     allpkgs['__blockpkgs'] = blockpkgs
     allpkgs['__replaces'] = replace_list
     allpkgs['__no_install'] = no_install
     for ch in channel:
-        pkg_path = '{}{}/{}/'.format(basedir, arch, ch)
+        pkg_path = '{}/{}/'.format(basedir, ch)
         for root, dirs, files in os.walk(pkg_path):
             if 'old' in dirs:
                 dirs.remove('old')
@@ -51,7 +53,10 @@ for arch in archdir:
                 if '.txz' in i or '.tgz' in i:
                     (base, vers, p_arch, tmp) = i.split('-')
                     (build, ext) = tmp.split('.')
-                    path = root.replace(basedir, '')
+                    # path = root.replace(basedir, '')
+                    path = root
                     allpkgs[base] = (vers, p_arch, build, ext, path)
-    with open('allpkgs_{}.pickle'.format(arch), 'w') as f:
+    with open('allpkgs.pickle', 'w') as f:
         pickle.dump(allpkgs, f)
+    # print(allpkgs)
+    os.chdir(old_dir)
