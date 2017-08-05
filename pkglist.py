@@ -4,7 +4,7 @@
 import os, pickle
 
 basedir = '/home/ftp/pub/Plamo-6.x/'
-archdir = ('x86/', 'x86_64/')
+archdir = ('x86/', 'x86_64/', 'arm/')
 channel = ('plamo', 'contrib')
 
 '''
@@ -29,9 +29,7 @@ replace_list = {'tamago': 'tamago_tsunagi', 'python': 'Python2',
 __no_install: これらのパッケージは updatepkg -f 以外の作業が必要になる
 ので，ダウンロードはできるが自動インストールはしない．
 '''
-no_install = ['grub', 'lilo', 'kernel', 'kernel_headers', 'kernelsrc',
-        'timezone', 'docbook_xml_4.1.2', 'docbook_xml_4.2', 'docbook_xml_4.3',
-        'docbook_xml_4.4', 'docbook_xml_4.5', 'docbook_xml_5.0']
+no_install = ['grub', 'lilo', 'kernel', 'kernel_headers', 'kernelsrc']
 
 for arch in archdir:
     allpkgs= {}
